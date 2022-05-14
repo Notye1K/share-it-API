@@ -11,10 +11,11 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  nick     String @unique
-  email    String @unique
-  password String
+  id           Int           @id @default(autoincrement())
+  nick         String        @unique
+  email        String        @unique
+  password     String
+  publications Publication[]
 
   @@map("users")
 }
@@ -27,6 +28,10 @@ model Publication {
   date                   DateTime              @default(now())
   likes                  Int                   @default(0)
   categoriesPublications CategoryPublication[]
+  userId                 Int
+  user                   User                  @relation(fields: [userId], references: [id])
+
+
 
   @@map("publications")
 }
