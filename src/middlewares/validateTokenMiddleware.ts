@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
-import * as userService from '../services/userService.js'
+import userService from '../services/userService.js'
 
-interface TokenData {
+export interface TokenData {
     id: number
     nick: string
     email: string
@@ -39,7 +39,7 @@ async function getUser(token: string) {
     const secretKey = process.env.JWT_SECRET
     const tokenData = jwt.verify(token, secretKey) as TokenData
     delete tokenData.iat
-    const user = await userService.find(tokenData)
+    const user = await userService.findUser(tokenData.nick)
     delete user.password
     return user
 }

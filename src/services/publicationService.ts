@@ -7,11 +7,15 @@ async function getPublications() {
 }
 
 async function postPublication(body: PublicationBody) {
-    if (!body.text && !body.link) {
-        throw { type: 'user', status: 422, message: 'missing a text or a link' }
-    }
+    validateBody(body)
 
     await publicationRepo.insertPublication(body)
 }
 
 export default { getPublications, postPublication }
+
+function validateBody(body: PublicationBody) {
+    if (!body.text && !body.link) {
+        throw { type: 'user', status: 422, message: 'missing a text or a link' }
+    }
+}
