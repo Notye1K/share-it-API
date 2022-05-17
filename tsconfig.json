@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true, // esutou usando ecmaScript module
+    "module": "es6", // vai ser transformado em ecmaScript 6
+    "moduleResolution": "node",
+    "outDir": "dist"
+  },
+  "ts-node": {
+    "esm": true // esutou usando ecmaScript module
+  }
+}

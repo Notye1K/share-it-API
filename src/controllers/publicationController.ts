@@ -10,6 +10,6 @@ export async function getPublications(req: Request, res: Response) {
 export async function postPublication(req: Request, res: Response) {
     const userId = res.locals.user
 
-    await publicationService.postPublication({ ...req.body, userId })
+    await publicationService.postPublication({ ...req.body, userId: userId.id })
     res.sendStatus(201)
 }

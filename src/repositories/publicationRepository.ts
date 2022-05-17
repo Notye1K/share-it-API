@@ -1,4 +1,4 @@
-import prismaClient from '../database'
+import prismaClient from '../database.js'
 
 async function getPublications() {
     return await prismaClient.publication.findMany()
@@ -9,12 +9,22 @@ export interface PublicationBody {
     link: string | null
     text: string | null
     userId: number
+    categoryIds: number[]
 }
 
-async function insertPublication(body: PublicationBody) {
-    await prismaClient.publication.create({
+async function insertPublication(body: Omit<PublicationBody, 'categoryIds'>) {
+    return await prismaClient.publication.create({
         data: { ...body },
     })
 }
 
-export default { getPublications, insertPublication }
+async function insertCategoryPublication(
+    publicationId: number,
+    categoryId: number
+) {
+    await prismaClient.categoryPublication.create({
+        data: { categoryId, publicationId },
+    })
+}
+
+export default { getPublications, insertPublication, insertCategoryPublication }

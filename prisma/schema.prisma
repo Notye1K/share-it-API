@@ -15,6 +15,7 @@ model User {
   nick         String        @unique
   email        String        @unique
   password     String
+  createAt     DateTime      @default(now())
   publications Publication[]
 
   @@map("users")

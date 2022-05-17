@@ -19,12 +19,23 @@ async function login(body: Partial<UserBody>) {
     const email = body.email
     validateBody(nick, email)
     const user = await getUser(nick, email)
+    validateUser(user)
     comparePassword(user.password, body.password)
     const token = createToken(user)
     return token
 }
 
 export default { findUser, createUser, login }
+
+function validateUser(user: User) {
+    if (!user) {
+        throw {
+            type: 'user',
+            status: 401,
+            message: 'email or nick not registered',
+        }
+    }
+}
 
 function createToken(user: User) {
     delete user.password
