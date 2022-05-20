@@ -7,9 +7,9 @@ import publicationSchema from '../schemas/publicationSchema.js'
 
 const publiRouter = Router()
 
-publiRouter.get('/', publicationController.getPublications)
+publiRouter.get('/publications', publicationController.getPublications)
 publiRouter.post(
-    '/',
+    '/publications',
     validateTokenMiddleware,
     validateSchemaMiddleware(publicationSchema),
     publicationController.postPublication

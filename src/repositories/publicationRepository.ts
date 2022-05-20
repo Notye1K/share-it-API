@@ -1,7 +1,9 @@
 import prismaClient from '../database.js'
 
 async function getPublications() {
-    return await prismaClient.publication.findMany()
+    return await prismaClient.publication.findMany({
+        include: { categoriesPublications: { include: { category: true } } },
+    })
 }
 
 export interface PublicationBody {
