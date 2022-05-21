@@ -18,7 +18,35 @@ async function postPublication(body: PublicationBody) {
     })
 }
 
-export default { getPublications, postPublication }
+async function getLike(userId: number, publicationId: number) {
+    validateId(publicationId)
+    const result = await publicationRepo.getLike(userId, publicationId)
+
+    return result?.like
+}
+
+async function postLike(
+    userId: number,
+    publicationId: number,
+    like: boolean | undefined
+) {
+    validateId(publicationId)
+
+    const result = await publicationRepo.getLike(userId, publicationId)
+    const resultLike = result?.like
+
+    await updatePublication(resultLike, like, publicationId)
+
+    if (like === undefined) {
+        like = null
+    }
+
+    await publicationRepo.changeLike(userId, publicationId, like)
+
+    //TODO if 50
+}
+
+export default { getPublications, postPublication, getLike, postLike }
 
 async function validateBody(body: PublicationBody) {
     if (!body.text && !body.link) {
@@ -26,6 +54,31 @@ async function validateBody(body: PublicationBody) {
     }
 
     await validateCategoryId(body)
+}
+
+async function updatePublication(
+    resultLike: boolean,
+    like: boolean,
+    publicationId: number
+) {
+    if (resultLike === like) {
+        return
+    } else if (resultLike && like === undefined) {
+        await publicationRepo.updateLike(publicationId, -1)
+    } else if (resultLike && like === false) {
+        await publicationRepo.updateLike(publicationId, -2)
+    } else if ((resultLike === undefined || resultLike === null) && like) {
+        await publicationRepo.updateLike(publicationId, 1)
+    } else if (
+        (resultLike === undefined || resultLike === null) &&
+        like === false
+    ) {
+        await publicationRepo.updateLike(publicationId, -1)
+    } else if (resultLike === false && like) {
+        await publicationRepo.updateLike(publicationId, 2)
+    } else if (resultLike === false && like === undefined) {
+        await publicationRepo.updateLike(publicationId, 1)
+    }
 }
 
 async function validateCategoryId(body: PublicationBody) {
@@ -36,4 +89,10 @@ async function validateCategoryId(body: PublicationBody) {
             throw { type: 'user', status: 404, message: 'invalid categoryId' }
         }
     })
+}
+
+function validateId(id: number) {
+    if (isNaN(id)) {
+        throw { type: 'user', status: 400, message: 'invalid publicationId' }
+    }
 }

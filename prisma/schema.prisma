@@ -17,8 +17,21 @@ model User {
   password     String
   createAt     DateTime      @default(now())
   publications Publication[]
+  userLikes    UserLikes[]
+
 
   @@map("users")
+}
+
+model UserLikes {
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  publicationId Int
+  publication   Publication @relation(fields: [publicationId], references: [id])
+  like          Boolean?
+
+  @@id([userId, publicationId])
+  @@map("user-likes")
 }
 
 model Publication {
@@ -31,7 +44,7 @@ model Publication {
   categoriesPublications CategoryPublication[]
   userId                 Int
   user                   User                  @relation(fields: [userId], references: [id])
-
+  userLikes              UserLikes[]
 
 
   @@map("publications")

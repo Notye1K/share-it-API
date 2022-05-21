@@ -13,3 +13,22 @@ export async function postPublication(req: Request, res: Response) {
     await publicationService.postPublication({ ...req.body, userId: userId.id })
     res.sendStatus(201)
 }
+
+export async function getLike(req: Request, res: Response) {
+    const { id } = res.locals.user
+    const { publicationId } = req.params
+
+    const result = await publicationService.getLike(+id, +publicationId)
+
+    res.send(result)
+}
+
+export async function postLike(req: Request, res: Response) {
+    const { id } = res.locals.user
+    const { like } = req.body
+    const { publicationId } = req.params
+
+    await publicationService.postLike(+id, +publicationId, like)
+
+    res.sendStatus(200)
+}
