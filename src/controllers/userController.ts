@@ -8,6 +8,6 @@ export async function register(req: Request, res: Response) {
 }
 
 export async function login(req: Request, res: Response) {
-    const token = await userService.login(req.body)
-    res.send(token)
+    const result = await userService.login(req.body)
+    res.send(result)
 }

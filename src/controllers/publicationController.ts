@@ -39,3 +39,12 @@ export async function getPublicationsByCategory(req: Request, res: Response) {
 
     res.send(result)
 }
+
+export async function deletePost(req: Request, res: Response) {
+    const { publicationId } = req.params
+    const { id } = res.locals.user
+
+    await publicationService.userDeletePublication(+id, +publicationId)
+
+    res.sendStatus(200)
+}

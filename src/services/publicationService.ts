@@ -37,7 +37,7 @@ async function postLike(
 
     await updatePublication(resultLike, like, publicationId)
 
-    const isDeleted = await isTimeToDelete(publicationId, userId)
+    const isDeleted = await isTimeToDelete(publicationId)
     if (isDeleted) {
         return
     }
@@ -53,12 +53,32 @@ async function getPublicationsByCategory(category: string) {
     return await publicationRepo.findPublicationsByCategory(category)
 }
 
+async function userDeletePublication(userId: number, publicationId: number) {
+    validateId(publicationId)
+
+    await validatePermissionToDelete(publicationId, userId)
+
+    await deletePublication(publicationId)
+}
+
 export default {
     getPublications,
     postPublication,
     getLike,
     postLike,
     getPublicationsByCategory,
+    userDeletePublication,
+}
+
+async function validatePermissionToDelete(
+    publicationId: number,
+    userId: number
+) {
+    const publication = await publicationRepo.findPublication(publicationId)
+
+    if (userId !== publication.userId) {
+        throw { type: 'user', status: 401, message: 'Unauthorized' }
+    }
 }
 
 async function validateBody(body: PublicationBody) {
@@ -110,15 +130,19 @@ function validateId(id: number) {
     }
 }
 
-async function isTimeToDelete(publicationId: number, userId: number) {
-    const { likes: publicationsLikes } = await publicationRepo.getHowManyLikes(
+async function isTimeToDelete(publicationId: number) {
+    const { likes: publicationsLikes } = await publicationRepo.findPublication(
         publicationId
     )
     if (publicationsLikes < -50) {
-        await publicationRepo.deleteUserLikes(userId, publicationId)
-        await publicationRepo.deleteCategoryPublication(publicationId)
-        await publicationRepo.deletePublication(publicationId)
+        await deletePublication(publicationId)
         return true
     }
     return false
+}
+
+async function deletePublication(publicationId: number) {
+    await publicationRepo.deleteUserLikes(publicationId)
+    await publicationRepo.deleteCategoryPublication(publicationId)
+    await publicationRepo.deletePublication(publicationId)
 }

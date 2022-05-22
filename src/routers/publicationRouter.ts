@@ -34,4 +34,10 @@ publiRouter.get(
     publicationController.getPublicationsByCategory
 )
 
+publiRouter.delete(
+    '/publications/:publicationId',
+    validateTokenMiddleware,
+    publicationController.deletePost
+)
+
 export default publiRouter

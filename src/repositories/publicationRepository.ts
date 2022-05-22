@@ -78,10 +78,9 @@ async function findPublicationsByCategory(category: string) {
     })
 }
 
-async function getHowManyLikes(publicationId: number) {
+async function findPublication(publicationId: number) {
     return prismaClient.publication.findUnique({
         where: { id: publicationId },
-        select: { likes: true },
     })
 }
 
@@ -91,9 +90,9 @@ async function deletePublication(publicationId: number) {
     })
 }
 
-async function deleteUserLikes(userId: number, publicationId: number) {
-    await prismaClient.userLikes.delete({
-        where: { userId_publicationId: { userId, publicationId } },
+async function deleteUserLikes(publicationId: number) {
+    await prismaClient.userLikes.deleteMany({
+        where: { publicationId },
     })
 }
 
@@ -111,7 +110,7 @@ export default {
     changeLike,
     updateLike,
     findPublicationsByCategory,
-    getHowManyLikes,
+    findPublication,
     deletePublication,
     deleteUserLikes,
     deleteCategoryPublication,

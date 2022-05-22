@@ -22,7 +22,7 @@ async function login(body: Partial<UserBody>) {
     validateUser(user)
     comparePassword(user.password, body.password)
     const token = createToken(user)
-    return token
+    return { token, userId: user.id }
 }
 
 export default { findUser, createUser, login }
