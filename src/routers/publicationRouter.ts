@@ -29,4 +29,9 @@ publiRouter.post(
     publicationController.postLike
 )
 
+publiRouter.get(
+    '/publications/categories/:category',
+    publicationController.getPublicationsByCategory
+)
+
 export default publiRouter

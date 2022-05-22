@@ -32,3 +32,10 @@ export async function postLike(req: Request, res: Response) {
 
     res.sendStatus(200)
 }
+
+export async function getPublicationsByCategory(req: Request, res: Response) {
+    const { category } = req.params
+    const result = await publicationService.getPublicationsByCategory(category)
+
+    res.send(result)
+}

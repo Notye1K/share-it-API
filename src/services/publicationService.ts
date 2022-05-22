@@ -37,16 +37,29 @@ async function postLike(
 
     await updatePublication(resultLike, like, publicationId)
 
+    const isDeleted = await isTimeToDelete(publicationId, userId)
+    if (isDeleted) {
+        return
+    }
+
     if (like === undefined) {
         like = null
     }
 
     await publicationRepo.changeLike(userId, publicationId, like)
-
-    //TODO if 50
 }
 
-export default { getPublications, postPublication, getLike, postLike }
+async function getPublicationsByCategory(category: string) {
+    return await publicationRepo.findPublicationsByCategory(category)
+}
+
+export default {
+    getPublications,
+    postPublication,
+    getLike,
+    postLike,
+    getPublicationsByCategory,
+}
 
 async function validateBody(body: PublicationBody) {
     if (!body.text && !body.link) {
@@ -95,4 +108,17 @@ function validateId(id: number) {
     if (isNaN(id)) {
         throw { type: 'user', status: 400, message: 'invalid publicationId' }
     }
+}
+
+async function isTimeToDelete(publicationId: number, userId: number) {
+    const { likes: publicationsLikes } = await publicationRepo.getHowManyLikes(
+        publicationId
+    )
+    if (publicationsLikes < -50) {
+        await publicationRepo.deleteUserLikes(userId, publicationId)
+        await publicationRepo.deleteCategoryPublication(publicationId)
+        await publicationRepo.deletePublication(publicationId)
+        return true
+    }
+    return false
 }

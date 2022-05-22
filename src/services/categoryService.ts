@@ -1,6 +1,7 @@
 import categoryRepository from '../repositories/categoryRepository.js'
 
 async function postCategory(title: string) {
+    title = title.toLowerCase()
     await validateTitle(title)
 
     await categoryRepository.create(title)
