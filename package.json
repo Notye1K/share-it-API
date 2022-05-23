@@ -6,7 +6,7 @@
   "main": "src/server.ts",
   "scripts": {
     "build": "tsc",
-    "start": "npx prisma migrate deploy && node dist/src/server.js",
+    "start": "npx prisma migrate deploy && node dist/server.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i"
   },
   "keywords": [],
