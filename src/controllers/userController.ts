@@ -11,3 +11,7 @@ export async function login(req: Request, res: Response) {
     const result = await userService.login(req.body)
     res.send(result)
 }
+
+export async function checkToken(req: Request, res: Response) {
+    res.sendStatus(200)
+}
