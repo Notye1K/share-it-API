@@ -36,7 +36,7 @@ dotenv-cli; nodemon; prisma; typescript; jwt; bcrypt;
 5. Add and config a .env file
 6. Run the back-end with
 
- `npm run dev`
+ `npx nodemon`
 
 This script will run your back-end on http://localhost:5000. This is where you can do a requisition.
 
